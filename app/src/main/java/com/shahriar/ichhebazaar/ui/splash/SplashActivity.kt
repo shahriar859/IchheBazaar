@@ -6,37 +6,42 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.shahriar.ichhebazaar.R
 import com.shahriar.ichhebazaar.ui.MainActivity
-import com.shahriar.ichhebazaar.ui.login.LoginActivity
 import com.shahriar.ichhebazaar.ui.slider.SliderActivity
-import com.shahriar.socialmedia.datasource.DatastoreManager
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: SplashViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_splash)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            initialLogic()
-        }, 3000)
+        viewModel = ViewModelProvider(this)[SplashViewModel::class.java]
 
+        initialLogic()
     }
 
     fun initialLogic() {
-        val dataStoreManager = DatastoreManager(this)
+        Handler(Looper.getMainLooper()).postDelayed({
+            checkLogin()
+        }, 3000)
+    }
+
+    fun checkLogin() {
         lifecycleScope.launch {
-            val isLoggedIn = dataStoreManager.getBoolean("IS_LOGGED_IN", false).first()
-            if (isLoggedIn == true)
-                navigateToHome()
-            else
-                navigateToSliderActivity()
+            viewModel.tokenFlow.collect { token ->
+                if (token != null) {
+                    navigateToHome()
+                } else {
+                    navigateToSliderActivity()
+                }
+            }
         }
     }
 

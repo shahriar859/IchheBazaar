@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
+    android:background="#ffffff"
     tools:context=".ui.login.LoginActivity">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -47,9 +48,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
+        android:textSize="24sp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/primary_blue"
         android:textColor="@android:color/white"
-        app:cornerRadius="8dp" />
+        app:cornerRadius="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Have no account?"
+            android:textAlignment="center"
+            android:textColor="@color/primary_blue"
+            />
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Register"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColorLink="@color/primary_blue"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>

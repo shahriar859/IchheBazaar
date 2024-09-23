@@ -1,4 +1,4 @@
-package com.shahriar.socialmedia.datasource
+package com.shahriar.ichhebazaar.datasource
 
 import android.content.Context
 import androidx.datastore.core.DataStore

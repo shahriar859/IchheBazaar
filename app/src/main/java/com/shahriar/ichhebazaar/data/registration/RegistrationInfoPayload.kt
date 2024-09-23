@@ -1,8 +1,8 @@
 package com.shahriar.ichhebazaar.data.registration
 
 data class RegistrationInfoPayload(
-    val email: String?,
     val name: String?,
+    val phone: String?,
+    val email: String?,
     val password: String?,
-    val phone: String?
 )

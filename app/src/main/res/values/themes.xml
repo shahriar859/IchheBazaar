@@ -2,10 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.IchheBazaar" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorPrimaryVariant">@color/primary_blue_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/secondary_orange</item>
+
     </style>
 
     <style name="Theme.IchheBazaar" parent="Base.Theme.IchheBazaar" />

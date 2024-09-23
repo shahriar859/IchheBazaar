@@ -4,30 +4,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shahriar.ichhebazaar.R
-import com.shahriar.ichhebazaar.ui.MainActivity
 import com.shahriar.ichhebazaar.ui.MainViewModel
 import com.shahriar.ichhebazaar.ui.login.LoginActivity
+import com.shahriar.ichhebazaar.utils.Utility.isValidEmail
 import kotlinx.coroutines.launch
 
 class RegistrationActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_registration)
+
+        viewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
         val nameInputLayout = findViewById<TextInputLayout>(R.id.nameInputLayout)
         val nameEditText = findViewById<TextInputEditText>(R.id.nameEditText)
@@ -77,7 +78,7 @@ class RegistrationActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val email = s.toString()
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!isValidEmail(email)) {
                     emailInputLayout.error = "Invalid email address"
                     emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
@@ -102,7 +103,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
         })
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        observeViewModel()
 
         registerButton.setOnClickListener {
             val name = nameEditText.text.toString()
@@ -114,26 +115,37 @@ class RegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
             } else if (phone.isEmpty() || !phone.startsWith("+880") || phone.length < 14) {
                 Toast.makeText(this, "Invalid phone number", Toast.LENGTH_SHORT).show()
-            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            } else if (!isValidEmail(email)) {
                 Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show()
             } else if (password.length < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
             } else {
-                // API call and navigation to login
-                viewModel.registerProfile(email, name, password, phone)
-                lifecycleScope.launch {
-                    viewModel.registrationResponse.collect { response ->
-                        if (response != null) {
-                            Toast.makeText(this@RegistrationActivity, "Registration Successful", Toast.LENGTH_SHORT).show()
-                            navigateToLogin()
-                        }else{
-                            Toast.makeText(this@RegistrationActivity, "",Toast.LENGTH_SHORT).show()
-                        }
+                // API call
+                viewModel.registerProfile(name, phone, email, password, this)
+            }
+        }
+
+        val login = findViewById<TextView>(R.id.login)
+        login.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            //finish()
+        }
+
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.registrationResponse.collect { response ->
+                if(response != null) {
+                    if(response.status == 200) {
+                        navigateToLogin()
+                    }else{
+                        Toast.makeText(this@RegistrationActivity, response.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
     }
 
     fun navigateToLogin() {
