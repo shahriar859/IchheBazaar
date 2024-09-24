@@ -36,14 +36,14 @@ class SliderActivity : AppCompatActivity() {
         registration.setOnClickListener {
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
-            //finish()
+            finish()
         }
 
         val login = findViewById<TextView>(R.id.login)
         login.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            //finish()
+            finish()
         }
     }
 }

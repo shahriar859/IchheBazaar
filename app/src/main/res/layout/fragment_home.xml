@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/white"
     tools:context=".ui.MainActivity">
 
     <!-- Profile Section -->
@@ -17,31 +18,33 @@
             android:id="@+id/profile_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_profile_outline"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_profile_outline" />
 
         <!-- Greeting Text -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/profile_image"
-            android:layout_marginStart="10dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hi, Shahriar"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:textColor="@color/text_dark_gray"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Let's go shopping"
-                android:textSize="14sp"
-                android:textColor="#888888"/>
+                android:textColor="@color/text_dark_gray"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -56,25 +59,33 @@
                 android:id="@+id/notification_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_notifications_outline"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_notifications_outline" />
 
             <ImageView
                 android:id="@+id/cart_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_search_outline"
+                android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/notification_icon"
-                android:layout_marginEnd="16dp"/>
+                android:src="@drawable/ic_search_outline" />
         </RelativeLayout>
     </RelativeLayout>
 
-    <!-- ViewPager for Slider -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+    <!-- Slider -->
+    <com.denzcoskun.imageslider.ImageSlider
+        android:id="@+id/image_slider"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        app:iss_auto_cycle="true"
+        app:iss_corner_radius="20"
+        app:iss_delay="1000"
+        app:iss_period="1000"
+        app:iss_selected_dot="@drawable/dot_selected"
+        app:iss_text_align="CENTER"
+        app:iss_text_color="#ffffff"
+        app:iss_unselected_dot="@drawable/dot_unselected" />
 
     <!-- New Arrivals Section -->
     <RelativeLayout
@@ -85,24 +96,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:text="New Arrivals 🔥"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_alignParentStart="true"/>
+            android:textColor="@color/text_dark_gray"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:text="See All"
             android:textColor="@color/primary_blue"
-            android:layout_alignParentEnd="true"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <!-- RecyclerView for Products -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

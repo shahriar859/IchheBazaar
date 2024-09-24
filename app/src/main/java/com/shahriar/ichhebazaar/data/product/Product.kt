@@ -1,5 +1,9 @@
 package com.shahriar.ichhebazaar.data.product
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Product(
     val brand: Brand?,
     val brand_id: Int?,
@@ -26,4 +30,4 @@ data class Product(
     val sub_category: SubCategory?,
     val sub_category_id: Int?,
     val updated_at: String?
-)
+): Parcelable
