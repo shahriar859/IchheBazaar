@@ -18,6 +18,9 @@
             android:name=".ui.slider.SliderActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.fragment.DetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.register.RegistrationActivity"
             android:exported="false" />
         <activity
