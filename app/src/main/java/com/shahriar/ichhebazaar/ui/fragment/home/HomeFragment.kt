@@ -1,4 +1,4 @@
-package com.shahriar.ichhebazaar.ui.fragment
+package com.shahriar.ichhebazaar.ui.fragment.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +18,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.shahriar.ichhebazaar.R
 import com.shahriar.ichhebazaar.data.product.Product
+import com.shahriar.ichhebazaar.ui.fragment.DetailsActivity
 import kotlinx.coroutines.launch
 
 
@@ -43,9 +44,9 @@ class HomeFragment : Fragment() {
 
         val imageList = ArrayList<SlideModel>()
 
-        imageList.add(SlideModel(R.drawable.sliderone, "Various Collections of the Latest Products"))
-        imageList.add(SlideModel(R.drawable.slidertwo, "Complete Collections of Colors and Series"))
-        imageList.add(SlideModel(R.drawable.sliderthree, "Find the Most Suitable Outfit for You"))
+        imageList.add(SlideModel(R.drawable.sliderone))
+        imageList.add(SlideModel(R.drawable.slidertwo))
+        imageList.add(SlideModel(R.drawable.sliderthree))
 
         val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
         imageSlider.setImageList(imageList, ScaleTypes.CENTER_CROP)

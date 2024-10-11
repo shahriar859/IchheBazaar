@@ -1,5 +1,6 @@
-package com.shahriar.ichhebazaar.ui.fragment
+package com.shahriar.ichhebazaar.ui.fragment.home
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class ProductAdapter(
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newList: List<Product>) {
         productList = newList
         notifyDataSetChanged()
