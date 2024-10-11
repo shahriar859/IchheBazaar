@@ -1,4 +1,4 @@
-package com.shahriar.ichhebazaar.ui.fragment
+package com.shahriar.ichhebazaar.ui.fragment.home
 
 import android.app.Application
 import android.util.Log

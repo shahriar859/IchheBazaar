@@ -36,11 +36,8 @@ class DetailsActivity : AppCompatActivity() {
         brand = findViewById(R.id.brand_name)
         shippingCost = findViewById(R.id.shipping_cost)
 
-//        get the Product details from home items
         val product = intent.getParcelableExtra<Product>("PRODUCT")
 
-//        Set the data to the views
-//        Capitalize the title name
         title.text = product?.name?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
         oldPrice.text = "৳${product?.price} TK"
         quantity.text = "Quantity: ${product?.quantity.toString()}"
@@ -50,13 +47,11 @@ class DetailsActivity : AppCompatActivity() {
         brand.text = product?.brand?.name
         shippingCost.text = "৳${product?.shipping_cost}"
 
-
         main_image.load(product?.main_image){
             crossfade(true)
             placeholder(R.drawable.placeholder)  // Default image while loading
             error(R.drawable.placeholder)
         }
-
 
     }
 }

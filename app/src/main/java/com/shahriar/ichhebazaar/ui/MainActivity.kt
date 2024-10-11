@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.shahriar.ichhebazaar.R
 import com.shahriar.ichhebazaar.ui.fragment.CartFragment
 import com.shahriar.ichhebazaar.ui.fragment.FavouriteFragment
-import com.shahriar.ichhebazaar.ui.fragment.HomeFragment
+import com.shahriar.ichhebazaar.ui.fragment.home.HomeFragment
 import com.shahriar.ichhebazaar.ui.fragment.NewProductFragment
 import com.shahriar.ichhebazaar.ui.fragment.ProfileFragment
 

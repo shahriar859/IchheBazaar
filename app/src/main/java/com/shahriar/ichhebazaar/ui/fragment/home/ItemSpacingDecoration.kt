@@ -1,4 +1,4 @@
-package com.shahriar.ichhebazaar.ui.fragment
+package com.shahriar.ichhebazaar.ui.fragment.home
 
 import android.graphics.Rect
 import android.view.View
