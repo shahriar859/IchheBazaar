@@ -3,12 +3,10 @@ package com.shahriar.ichhebazaar.ui.register
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.shahriar.ichhebazaar.api.GuestApiClient
 import com.shahriar.ichhebazaar.api.Resource
-import com.shahriar.ichhebazaar.data.login.LoginResponse
 import com.shahriar.ichhebazaar.data.registration.RegistrationInfoPayload
 import com.shahriar.ichhebazaar.data.registration.RegistrationResponse
 import com.shahriar.ichhebazaar.repository.AuthRepo
@@ -21,9 +19,7 @@ class RegistrationViewModel (application: Application) : AndroidViewModel(applic
     val registrationResponse = MutableStateFlow<RegistrationResponse?>(null)
     val isLoading = MutableStateFlow(true)
     val errorMessage = MutableStateFlow<String?>(null)
-
     private val authRepo = AuthRepo(GuestApiClient.api)
-
 
     fun registerProfile(name: String, phone: String, email: String, password: String, context: Context) {
         val newInstance = RegistrationInfoPayload(
@@ -47,9 +43,8 @@ class RegistrationViewModel (application: Application) : AndroidViewModel(applic
 
                     is Resource.Error -> {
                         isLoading.value = false // Stop loading
-                        val errorMessage = resource.message
+                        errorMessage.value = resource.message
                         Log.d("error", resource.message)
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

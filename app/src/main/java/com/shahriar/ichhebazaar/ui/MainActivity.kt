@@ -3,12 +3,11 @@ package com.shahriar.ichhebazaar.ui
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.shahriar.ichhebazaar.R
-import com.shahriar.ichhebazaar.ui.fragment.CartFragment
+import com.shahriar.ichhebazaar.databinding.ActivityMainBinding
+import com.shahriar.ichhebazaar.ui.fragment.cart.CartFragment
 import com.shahriar.ichhebazaar.ui.fragment.FavouriteFragment
 import com.shahriar.ichhebazaar.ui.fragment.home.HomeFragment
 import com.shahriar.ichhebazaar.ui.fragment.NewProductFragment
@@ -16,136 +15,91 @@ import com.shahriar.ichhebazaar.ui.fragment.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
-
-    private lateinit var home: ImageView
-    private lateinit var cart: ImageView
-    private lateinit var favourite: ImageView
-    private lateinit var profile: ImageView
-    private lateinit var add: ImageView
+    private lateinit var binding: ActivityMainBinding
     private var activeFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        home = findViewById(R.id.home)
-        cart = findViewById(R.id.cart)
-        favourite = findViewById(R.id.favourite)
-        profile = findViewById(R.id.profile)
-        add = findViewById(R.id.add)
-
-        // Load the default fragment (Home)
+        // Load default fragment (Home) if no previous state
         if (savedInstanceState == null) {
-            val homeFragment = HomeFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, homeFragment)
-                .commit()
-            activeFragment = homeFragment
+            setFragment(HomeFragment())
         }
 
         setupBottomNav()
     }
 
-    //button Click Listener
     private fun setupBottomNav() {
-        home.setOnClickListener {
-            switchFragment(HomeFragment(), R.id.home)
-        }
-        cart.setOnClickListener {
-            switchFragment(CartFragment(), R.id.cart)
-        }
-        favourite.setOnClickListener {
-            switchFragment(FavouriteFragment(), R.id.favourite)
-        }
-        profile.setOnClickListener {
-            switchFragment(ProfileFragment(), R.id.profile)
-        }
-        add.setOnClickListener {
-            switchFragment(NewProductFragment(), R.id.add)
-        }
+        binding.home.setOnClickListener { navigateTo(HomeFragment(), R.id.home) }
+        binding.cart.setOnClickListener { navigateTo(CartFragment(), R.id.cart) }
+        binding.favourite.setOnClickListener { navigateTo(FavouriteFragment(), R.id.favourite) }
+        binding.profile.setOnClickListener { navigateTo(ProfileFragment(), R.id.profile) }
+        binding.add.setOnClickListener { navigateTo(NewProductFragment(), R.id.add) }
 
-        // Set default selected item
+        // Set default selected item appearance
         updateNavBar(R.id.home)
     }
 
-    // Replace fragment only if the new fragment is different
-    private fun switchFragment(newFragment: Fragment, selectedItemId: Int) {
-        if (activeFragment == null || newFragment::class != activeFragment!!::class) {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.frameLayout, newFragment)
-                commit()
-            }
-            activeFragment = newFragment
+    private fun navigateTo(fragment: Fragment, selectedItemId: Int) {
+        if (activeFragment == null || fragment::class != activeFragment!!::class) {
+            setFragment(fragment)
             updateNavBar(selectedItemId)
         } else {
-            Toast.makeText(this, "Already on the selected page", Toast.LENGTH_SHORT).show()
+            showToast("Already on the selected page")
         }
     }
 
+    private fun setFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frameLayout, fragment)
+        transaction.setReorderingAllowed(true)  // Optional, depends on your setup
+        transaction.commit()
+        activeFragment = fragment
+    }
+
+    // Update the bottom navigation bar appearance
     private fun updateNavBar(selectedItemId: Int) {
-        // Reset all icons to default state
-        resetNavBarIcons()
+        resetNavBarIcons()  // Reset all icons to default state
 
-        // Change the icon and background for the selected item
+        // Set the selected item icon and background
         when (selectedItemId) {
-            R.id.home -> {
-                home.apply {
-                    setImageResource(R.drawable.ic_home)
-                    setBackgroundResource(R.drawable.circle_background)
-                }
-            }
-            R.id.cart -> {
-                cart.apply {
-                    setImageResource(R.drawable.ic_cart)
-                    setBackgroundResource(R.drawable.circle_background)
-                }
-            }
-            R.id.favourite -> {
-                favourite.apply {
-                    setImageResource(R.drawable.ic_heart)
-                    setBackgroundResource(R.drawable.circle_background)
-                }
-            }
-            R.id.profile -> {
-                profile.apply {
-                    setImageResource(R.drawable.ic_person)
-                    setBackgroundResource(R.drawable.circle_background)
-                }
-            }
-            R.id.add -> {
-                add.apply {
-                    setImageResource(R.drawable.ic_add_circle)
-                    setBackgroundResource(R.drawable.circle_background)
-                }
-            }
+            R.id.home -> setNavItemSelected(binding.home, R.drawable.ic_home)
+            R.id.cart -> setNavItemSelected(binding.cart, R.drawable.ic_cart)
+            R.id.favourite -> setNavItemSelected(binding.favourite, R.drawable.ic_heart)
+            R.id.profile -> setNavItemSelected(binding.profile, R.drawable.ic_person)
+            R.id.add -> setNavItemSelected(binding.add, R.drawable.ic_add_circle)
         }
     }
 
+    // Reset all icons to their default state
     private fun resetNavBarIcons() {
-        home.apply {
-            setImageResource(R.drawable.ic_home_outline)
-            background = null
+        setNavItemDefault(binding.home, R.drawable.ic_home_outline)
+        setNavItemDefault(binding.cart, R.drawable.ic_cart_outline)
+        setNavItemDefault(binding.favourite, R.drawable.ic_heart_outline)
+        setNavItemDefault(binding.profile, R.drawable.ic_person_outline)
+        setNavItemDefault(binding.add, R.drawable.ic_add_circle_outline)
+    }
+
+    // Helper function to set an icon as selected
+    private fun setNavItemSelected(item: ImageView, iconRes: Int) {
+        item.apply {
+            setImageResource(iconRes)
+            setBackgroundResource(R.drawable.circle_background)
         }
-        cart.apply {
-            setImageResource(R.drawable.ic_cart_outline)
-            background = null
-        }
-        favourite.apply {
-            setImageResource(R.drawable.ic_heart_outline)
-            background = null
-        }
-        profile.apply {
-            setImageResource(R.drawable.ic_person_outline)
-            background = null
-        }
-        add.apply {
-            setImageResource(R.drawable.ic_add_circle_outline)
+    }
+
+    // Helper function to reset an icon to its default state
+    private fun setNavItemDefault(item: ImageView, iconRes: Int) {
+        item.apply {
+            setImageResource(iconRes)
             background = null
         }
     }
 
+    // Show a toast message
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }

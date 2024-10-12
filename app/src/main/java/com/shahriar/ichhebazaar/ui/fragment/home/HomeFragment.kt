@@ -7,34 +7,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.AnimationTypes
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.shahriar.ichhebazaar.R
+import com.shahriar.ichhebazaar.databinding.FragmentHomeBinding
 import com.shahriar.ichhebazaar.data.product.Product
 import com.shahriar.ichhebazaar.ui.fragment.DetailsActivity
 import kotlinx.coroutines.launch
 
-
 class HomeFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var adapter: ProductAdapter
-    private lateinit var progressBar: ProgressBar
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        // Inflate the layout using ViewBinding
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,31 +40,26 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         val imageList = ArrayList<SlideModel>()
-
         imageList.add(SlideModel(R.drawable.sliderone))
         imageList.add(SlideModel(R.drawable.slidertwo))
         imageList.add(SlideModel(R.drawable.sliderthree))
 
-        val imageSlider = view.findViewById<ImageSlider>(R.id.image_slider)
-        imageSlider.setImageList(imageList, ScaleTypes.CENTER_CROP)
-        imageSlider.setSlideAnimation(AnimationTypes.ZOOM_OUT)
-        imageSlider.startSliding(2000)
+        // Using ViewBinding to access ImageSlider
+        binding.imageSlider.setImageList(imageList, ScaleTypes.CENTER_CROP)
+        binding.imageSlider.setSlideAnimation(AnimationTypes.ZOOM_OUT)
+        binding.imageSlider.startSliding(2000)
 
-        recyclerView = view.findViewById(R.id.recyclerView)
-        progressBar = view.findViewById(R.id.progressBar)
-
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.addItemDecoration(ItemSpacingDecoration(horizontal = 8, vertical = 8))
-        recyclerView.setPadding(0, 0, 0, 0)
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.addItemDecoration(ItemSpacingDecoration(horizontal = 8, vertical = 8))
+        binding.recyclerView.setPadding(0, 0, 0, 0)
 
         // Initialize the adapter with an empty list
         adapter = ProductAdapter(emptyList()) { item ->
             navigateToDetails(item)
         }
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
 
-
-//        Handle the Loading
+        // Handle the Loading
         handleLoading()
 
         lifecycleScope.launch {
@@ -82,6 +74,7 @@ class HomeFragment : Fragment() {
         }
 
     }
+
     private fun navigateToDetails(item: Product) {
         val intent = Intent(requireContext(), DetailsActivity::class.java).apply {
             putExtra("PRODUCT", item)
@@ -93,12 +86,11 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.isLoading.collect { isLoading ->
                 if (isLoading) {
-                    progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
                 } else {
-                    progressBar.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }
     }
-
 }
