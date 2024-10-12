@@ -14,16 +14,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shahriar.ichhebazaar.R
+import com.shahriar.ichhebazaar.databinding.ActivityLoginBinding
 import com.shahriar.ichhebazaar.ui.MainActivity
-import com.shahriar.ichhebazaar.ui.MainViewModel
 import com.shahriar.ichhebazaar.utils.Utility.isValidEmail
-import com.shahriar.ichhebazaar.datasource.DatastoreManager
 import com.shahriar.ichhebazaar.ui.register.RegistrationActivity
-import com.shahriar.ichhebazaar.ui.splash.SplashViewModel
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: LoginViewModel
     private lateinit var emailEditText: TextInputEditText
     private lateinit var passwordEditText: TextInputEditText
@@ -32,7 +31,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
-
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
 

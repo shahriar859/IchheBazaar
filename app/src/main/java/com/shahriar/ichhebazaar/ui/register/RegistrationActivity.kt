@@ -4,17 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.shahriar.ichhebazaar.R
-import com.shahriar.ichhebazaar.ui.MainViewModel
+import com.shahriar.ichhebazaar.databinding.ActivityRegistrationBinding
 import com.shahriar.ichhebazaar.ui.login.LoginActivity
 import com.shahriar.ichhebazaar.utils.Utility.isValidEmail
 import kotlinx.coroutines.launch
@@ -22,94 +17,87 @@ import kotlinx.coroutines.launch
 class RegistrationActivity : AppCompatActivity() {
 
     private lateinit var viewModel: RegistrationViewModel
+    private lateinit var binding: ActivityRegistrationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_registration)
+        binding = ActivityRegistrationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
 
-        val nameInputLayout = findViewById<TextInputLayout>(R.id.nameInputLayout)
-        val nameEditText = findViewById<TextInputEditText>(R.id.nameEditText)
-        val phoneInputLayout = findViewById<TextInputLayout>(R.id.phoneInputLayout)
-        val phoneEditText = findViewById<TextInputEditText>(R.id.phoneEditText)
-        val emailInputLayout = findViewById<TextInputLayout>(R.id.emailInputLayout)
-        val emailEditText = findViewById<TextInputEditText>(R.id.emailEditText)
-        val passwordInputLayout = findViewById<TextInputLayout>(R.id.passwordInputLayout)
-        val passwordEditText = findViewById<TextInputEditText>(R.id.passwordEditText)
-        val registerButton = findViewById<MaterialButton>(R.id.registerButton)
-
-        nameEditText.addTextChangedListener(object : TextWatcher {
+        // Set up TextWatchers for validation
+        binding.nameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val name = s.toString()
                 if (name.isEmpty()) {
-                    nameInputLayout.error = "Please enter your name"
-                    nameInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.nameInputLayout.error = "Please enter your name"
+                    binding.nameInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    nameInputLayout.error = null
-                    nameInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.nameInputLayout.error = null
+                    binding.nameInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                 }
             }
         })
 
-        phoneEditText.addTextChangedListener(object : TextWatcher {
+        binding.phoneEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val phone = s.toString()
                 if (phone.isEmpty() || !phone.startsWith("+880")) {
-                    phoneInputLayout.error = "Phone number must start with +880"
-                    phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.phoneInputLayout.error = "Phone number must start with +880"
+                    binding.phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else if (phone.length < 14) {
-                    phoneInputLayout.error = "Phone number is too short"
-                    phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.phoneInputLayout.error = "Phone number is too short"
+                    binding.phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    phoneInputLayout.error = null
-                    phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.phoneInputLayout.error = null
+                    binding.phoneInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                 }
             }
         })
 
-        emailEditText.addTextChangedListener(object : TextWatcher {
+        binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val email = s.toString()
                 if (!isValidEmail(email)) {
-                    emailInputLayout.error = "Invalid email address"
-                    emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.emailInputLayout.error = "Invalid email address"
+                    binding.emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    emailInputLayout.error = null
-                    emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.emailInputLayout.error = null
+                    binding.emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                 }
             }
         })
 
-        passwordEditText.addTextChangedListener(object : TextWatcher {
+        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val password = s.toString()
                 if (password.length < 6) {
-                    passwordInputLayout.error = "Password must be at least 6 characters"
-                    passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.passwordInputLayout.error = "Password must be at least 6 characters"
+                    binding.passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    passwordInputLayout.error = null
-                    passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.passwordInputLayout.error = null
+                    binding.passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                 }
             }
         })
 
+        // Observe the ViewModel
         observeViewModel()
 
-        registerButton.setOnClickListener {
-            val name = nameEditText.text.toString()
-            val phone = phoneEditText.text.toString()
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+        binding.registerButton.setOnClickListener {
+            val name = binding.nameEditText.text.toString()
+            val phone = binding.phoneEditText.text.toString()
+            val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
@@ -125,13 +113,10 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
 
-        val login = findViewById<TextView>(R.id.login)
-        login.setOnClickListener {
+        binding.login.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            //finish()
         }
-
     }
 
     private fun observeViewModel() {
@@ -140,7 +125,7 @@ class RegistrationActivity : AppCompatActivity() {
                 if(response != null) {
                     if(response.status == 200) {
                         navigateToLogin()
-                    }else{
+                    } else {
                         Toast.makeText(this@RegistrationActivity, response.message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -148,10 +133,9 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    fun navigateToLogin() {
+    private fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
-
 }
