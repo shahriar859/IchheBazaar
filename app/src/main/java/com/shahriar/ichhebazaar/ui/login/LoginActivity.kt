@@ -4,72 +4,62 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.shahriar.ichhebazaar.R
 import com.shahriar.ichhebazaar.databinding.ActivityLoginBinding
 import com.shahriar.ichhebazaar.ui.MainActivity
-import com.shahriar.ichhebazaar.utils.Utility.isValidEmail
 import com.shahriar.ichhebazaar.ui.register.RegistrationActivity
+import com.shahriar.ichhebazaar.utils.Utility.isValidEmail
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: LoginViewModel
-    private lateinit var emailEditText: TextInputEditText
-    private lateinit var passwordEditText: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_login)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
-
-        val emailInputLayout = findViewById<TextInputLayout>(R.id.emailInputLayout)
-        emailEditText = findViewById(R.id.emailEditText)
-        emailEditText.addTextChangedListener(object : TextWatcher {
+        // Setup text listeners for email and password input
+        binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val email = s.toString()
                 if (!isValidEmail(email)) {
-                    emailInputLayout.error = "Please enter a valid email"
-                    emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.emailInputLayout.error = "Please enter a valid email"
+                    binding.emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    emailInputLayout.error = null
-                    emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.emailInputLayout.error = null
+                    binding.emailInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                     viewModel.onEmailChanged(email)
                 }
             }
         })
 
-        val passwordInputLayout = findViewById<TextInputLayout>(R.id.passwordInputLayout)
-        passwordEditText = findViewById(R.id.passwordEditText)
-        passwordEditText.addTextChangedListener(object : TextWatcher {
+        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val password = s.toString()
                 if (password.isEmpty()) {
-                    passwordInputLayout.error = "Password is required"
-                    passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.passwordInputLayout.error = "Password is required"
+                    binding.passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else if (password.length < 6) {
-                    passwordInputLayout.error = "Password must be at least 6 characters"
-                    passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
+                    binding.passwordInputLayout.error = "Password must be at least 6 characters"
+                    binding.passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.red))
                 } else {
-                    passwordInputLayout.error = null
-                    passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
+                    binding.passwordInputLayout.error = null
+                    binding.passwordInputLayout.setBoxStrokeColor(resources.getColor(R.color.green))
                     viewModel.onPasswordChanged(password)
                 }
             }
@@ -77,50 +67,46 @@ class LoginActivity : AppCompatActivity() {
 
         observeViewModel()
 
-        val loginButton = findViewById<MaterialButton>(R.id.loginButton)
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+        // Login button click listener
+        binding.loginButton.setOnClickListener {
+            val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
             if (!isValidEmail(email)) {
                 Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show()
             } else if (password.isEmpty() || password.length < 6) {
                 Toast.makeText(this, "Invalid Password", Toast.LENGTH_SHORT).show()
             } else {
-                // API call
                 viewModel.userLogin(this)
             }
         }
 
-        val registration = findViewById<TextView>(R.id.register)
-        registration.setOnClickListener {
+        // Registration text click listener
+        binding.register.setOnClickListener {
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
-            //finish()
         }
-
     }
 
     override fun onStart() {
         super.onStart()
         // Set initial text for the email and password fields
-        emailEditText.setText(viewModel.emailStateFlow.value)
-        passwordEditText.setText(viewModel.passwordStateFlow.value)
+        binding.emailEditText.setText(viewModel.emailStateFlow.value)
+        binding.passwordEditText.setText(viewModel.passwordStateFlow.value)
     }
 
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.loginResponse.collect { response ->
-                if(response != null) {
+                if (response != null) {
                     navigateToHome()
                 }
             }
         }
     }
 
-    fun navigateToHome() {
+    private fun navigateToHome() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
-
 }
